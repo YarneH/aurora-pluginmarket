@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+<form action="http://localhost:5000/plugin_create" enctype=multipart/form-data method="POST">
+    <p>API token <input type="text" name="token"/></p>
+    <p>Name <input type="text" name="name"/></p>
+    <p>Description <input type="text" name="description"/></p>
+    <p>Version_code <input type="text" name="version_code"/></p>
+    <p>Unique_name <input type="text" name="unique_name"/></p>
+    <p>APP location <input type="text" name="apk_location"/></p>
+    <p>internal services <input type="text" name="internal_services"/></p>
+    <p>plugin logo location <input type="text" name="plugin_logo"/></p>
+    <p>In case you have to add a new plugin logo or apk</p>
+    <p>plugin logo (New Logo) <input type="file" name="plugin_logo_file"/></p>
+    <p>apk logo (New apk) <input type="file" name="plugin_apk_file"/></p>
+    <p><input type="submit" value="submit"/></p>
+</form>
+</body>
+</html>
