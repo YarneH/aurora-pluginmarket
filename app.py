@@ -93,7 +93,7 @@ def hello():
 
 
 def valid_token(token):
-    for line in open(basedir + '\\tokens.txt'):
+    for line in open(basedir + '/tokens.txt'):
         line = line.strip()
         [user, user_token] = re.split(' *\|\| *', line)
         if token == user_token:
@@ -101,7 +101,7 @@ def valid_token(token):
     return [False, None]
 
 
-@app.route("/plugin_create", methods=["GET", "POST"])
+@app.route("/create_plugin", methods=["GET", "POST"])
 def plugin_creator():
     if request.method == "GET":
         return render_template("create_plugin.html")
@@ -121,13 +121,13 @@ def plugin_creator():
                 return redirect(request.url)
             if logo and allowed_file(logo.filename, Config.ALLOWED_LOGO):
                 filename = secure_filename(logo.filename)
-                logo.save(os.path.join(basedir, "logos", filename))
+                logo.save("/var/www/logos/" + filename)
                 plugin_logo = "aurora-files.ml/logos/" + filename
             else:
                 flash('No selected file')
                 return redirect(request.url)
         if request.form['apk_location'] != "":
-            apk_location = request.form['plugin_logo']
+            apk_location = request.form['apk_location']
         else:
             apk = request.files['plugin_apk_file']
             if apk.filename == '':
@@ -135,7 +135,7 @@ def plugin_creator():
                 return redirect(request.url)
             if apk and allowed_file(apk.filename, Config.ALLOWED_APK):
                 filename = secure_filename(apk.filename)
-                apk.save(os.path.join(basedir, "apk", filename))
+                apk.save("/var/www/apk/" + filename)
                 apk_location = "aurora-files.ml/apk/" + filename
             else:
                 flash('No selected file')
