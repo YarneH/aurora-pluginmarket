@@ -1,35 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head profile="http://www.w3.org/2005/10/profile">
+    <meta charset="UTF-8">
+
+    <title>Pluginmarket</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+
 <body>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
+
+<nav class="navbar navbar-light bg-light">
+    <span class="navbar-brand mb-0 h1">Aurora pluginmarket backend</span>
+</nav>
+<div class="container">
     {% if plugin %}
         <form action="/edit_plugin/{{ plugin.id }}" enctype=multipart/form-data method="POST">
-    <p>API token {{ plugin.creator }} <input type="text" name="token"/></p>
-    <p>Name <input type="text" name="name" value="{{ plugin.name }}"/></p>
-    <p>Description <input type="text" name="description" value="{{ plugin.description }}"/></p>
-    <p>Version_code <input type="text" name="version_code" value="{{ plugin.version_code }}"/></p>
-    <p>Unique_name <input type="text" name="unique_name" value="{{ plugin.unique_name }}"/></p>
-    <p>APP location <input type="text" name="apk_location" value="{{ plugin.apk_location }}"/></p>
-    <p>internal services <input type="text" name="internal_services" value="{{ plugin.internal_services }}"/></p>
-    <p>plugin logo location <input type="text" name="plugin_logo" value="{{ plugin.plugin_logo }}"/></p>
-    <p>In case you have to add a new plugin logo or apk</p>
-    <p>plugin logo (New Logo) <input type="file" name="plugin_logo_file"/></p>
-    <p>apk logo (New apk) <input type="file" name="plugin_apk_file"/></p>
-    <p><input type="submit" value="submit"/></p>
+        <h3>Edit Plugin {{ plugin.id }}</h3>
+        <div class="form-group row">
+            <label class="col-3" for="token">API token {{ plugin.creator }} </label>
+            <input class="form-control col-9" type="text" name="token" id="token"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="name">Name </label>
+            <input class="form-control col-9" type="text" name="name" id="name" value="{{ plugin.name }}"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="description">Description </label>
+            <input class="form-control col-9" type="text" name="description" id="description"
+                   value="{{ plugin.description }}"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="version_code">Version_code </label>
+            <input class="form-control col-9" type="text" id="version_code" name="version_code"
+                   value="{{ plugin.version_code }}"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="unique_name">Unique_name </label>
+            <input class="form-control col-9" type="text" id="unique_name" name="unique_name"
+                   value="{{ plugin.unique_name }}"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="apk_location">APP location</label>
+            <input class="form-control col-9" type="text" name="apk_location" id="apk_location"
+                   value="{{ plugin.apk_location }}"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="internal_services">Internal Services </label>
+            <input class="form-control col-9" type="text" name="internal_services" id="internal_services"
+                   value="{{ plugin.internal_services }}"/>
+
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="plugin_logo">Plugin logo location </label>
+            <input class="form-control col-9" type="text" name="plugin_logo" id="plugin_logo"
+                   value="{{ plugin.plugin_logo }}"/>
+        </div>
+        <div class="form-group row">
+            <h4>In case you have to add a new plugin logo or apk</h4>
+        </div>
+        <div class="form-group row">
+            <label class="col-3">Plugin logo (New Logo) </label>
+            <input type="file" name="plugin_logo_file"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="apk_logo">Apk logo (New apk)</label>
+            <input type="file" name="plugin_apk_file" id="apk_logo"/>
+
+        </div>
+
     {% else %}
         <form action="/create_plugin" enctype=multipart/form-data method="POST">
-    <p>API token <input type="text" name="token"/></p>
-    <p>Name <input type="text" name="name"/></p>
-    <p>Description <input type="text" name="description"/></p>
-    <p>Version_code <input type="text" name="version_code"/></p>
-    <p>Unique_name <input type="text" name="unique_name"/></p>
-    <p>APP location <input type="text" name="apk_location"/></p>
-    <p>internal services <input type="text" name="internal_services"/></p>
-    <p>plugin logo location <input type="text" name="plugin_logo"/></p>
-    <p>In case you have to add a new plugin logo or apk</p>
-    <p>plugin logo (New Logo) <input type="file" name="plugin_logo_file"/></p>
-    <p>apk logo (New apk) <input type="file" name="plugin_apk_file"/></p>
-    <p><input type="submit" value="submit"/></p>
+        <h3>Create Plugin</h3>
+        <div class="form-group row">
+            <label class="col-3" for="token">API token</label>
+            <input class="form-control col-9" type="text" name="token" id="token"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="name">Name </label>
+            <input class="form-control col-9" type="text" name="name" id="name"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="description">Description </label>
+            <input class="form-control col-9" type="text" name="description" id="description"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="version_code">Version_code </label>
+            <input class="form-control col-9" type="text" id="version_code" name="version_code"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="unique_name">Unique_name </label>
+            <input class="form-control col-9" type="text" id="unique_name" name="unique_name"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="apk_location">APP location</label>
+            <input class="form-control col-9" type="text" name="apk_location" id="apk_location"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="internal_services">Internal Services </label>
+            <input class="form-control col-9" type="text" name="internal_services" id="internal_services"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="plugin_logo">Plugin logo location </label>
+            <input class="form-control col-9" type="text" name="plugin_logo" id="plugin_logo"/>
+        </div>
+        <div class="form-group row">
+            <h4>In case you have to add a new plugin logo or apk</h4>
+        </div>
+        <div class="form-group row">
+            <label class="col-3">Plugin logo (New Logo) </label>
+            <input type="file" name="plugin_logo_file"/>
+        </div>
+        <div class="form-group row">
+            <label class="col-3" for="apk_logo">Apk logo (New apk)</label>
+            <input type="file" name="plugin_apk_file" id="apk_logo"/>
+
+        </div>
+
     {% endif %}
-</form>
+    <button class="btn btn-primary" type="submit" value="submit">Submit</button>
+    </form>
+</div>
 </body>
 </html>
