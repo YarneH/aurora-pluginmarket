@@ -92,13 +92,62 @@ def hello():
     return "Hello World!"
 
 
-def valid_token(token):
+def valid_token(token, user_put=None):
     for line in open(basedir + '/tokens.txt'):
         line = line.strip()
         [user, user_token] = re.split(' *\|\| *', line)
+
         if token == user_token:
-            return [True, user]
+            if user_put is None or user == user_put:
+                return [True, user]
     return [False, None]
+
+
+@app.route("/edit_plugin/<id>", methods=["GET", "POST"])
+def plugin_edit(id):
+    if request.method == "GET":
+        plugin = Plugin.query.get(id)
+        return render_template("create_plugin.html", plugin=plugin)
+    if request.method == "POST":
+        plugin = Plugin.query.get(id)
+        validated_token = valid_token(request.form['token'], plugin.creator)
+        if request.method == "POST" and validated_token[0]:
+            plugin.name = request.form['name']
+            plugin.description = request.form['description']
+            plugin.version_code = request.form['version_code']
+            plugin.unique_name = request.form['unique_name']
+            plugin.internal_services = request.form['internal_services']
+            if request.form['plugin_logo'] != "":
+                plugin.plugin_logo = request.form['plugin_logo']
+            else:
+                logo = request.files['plugin_logo_file']
+                if logo.filename == '':
+                    flash('No selected logo')
+                    return redirect(request.url)
+                if logo and allowed_file(logo.filename, Config.ALLOWED_LOGO):
+                    filename = secure_filename(logo.filename)
+                    logo.save("/var/www/logos/" + filename)
+                    plugin.plugin_logo = "aurora-files.ml/logos/" + filename
+                else:
+                    flash('No selected file')
+                    return redirect(request.url)
+            if request.form['apk_location'] != "":
+                plugin.apk_location = request.form['apk_location']
+            else:
+                apk = request.files['plugin_apk_file']
+                if apk.filename == '':
+                    flash('No selected app')
+                    return redirect(request.url)
+                if apk and allowed_file(apk.filename, Config.ALLOWED_APK):
+                    filename = secure_filename(apk.filename)
+                    apk.save("/var/www/apk/" + filename)
+                    plugin.apk_location = "aurora-files.ml/apk/" + filename
+                else:
+                    flash('No selected file')
+                    return redirect(request.url)
+
+            db.session.commit()
+            return plugin_schema.jsonify(plugin)
 
 
 @app.route("/create_plugin", methods=["GET", "POST"])
