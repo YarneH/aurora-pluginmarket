@@ -127,7 +127,7 @@ def plugin_edit(id):
                 if logo and allowed_file(logo.filename, Config.ALLOWED_LOGO):
                     filename = secure_filename(logo.filename)
                     logo.save("/var/www/logos/" + filename)
-                    plugin.plugin_logo = "aurora-files.ml/logos/" + filename
+                    plugin.plugin_logo = "https://aurora-files.ml/logos/" + filename
                 else:
                     flash('No selected file')
                     return redirect(request.url)
@@ -141,7 +141,7 @@ def plugin_edit(id):
                 if apk and allowed_file(apk.filename, Config.ALLOWED_APK):
                     filename = secure_filename(apk.filename)
                     apk.save("/var/www/apk/" + filename)
-                    plugin.apk_location = "aurora-files.ml/apk/" + filename
+                    plugin.apk_location = "https://aurora-files.ml/apk/" + filename
                 else:
                     flash('No selected file')
                     return redirect(request.url)
@@ -171,7 +171,7 @@ def plugin_creator():
             if logo and allowed_file(logo.filename, Config.ALLOWED_LOGO):
                 filename = secure_filename(logo.filename)
                 logo.save("/var/www/logos/" + filename)
-                plugin_logo = "aurora-files.ml/logos/" + filename
+                plugin_logo = "https://aurora-files.ml/logos/" + filename
             else:
                 flash('No selected file')
                 return redirect(request.url)
@@ -185,7 +185,7 @@ def plugin_creator():
             if apk and allowed_file(apk.filename, Config.ALLOWED_APK):
                 filename = secure_filename(apk.filename)
                 apk.save("/var/www/apk/" + filename)
-                apk_location = "aurora-files.ml/apk/" + filename
+                apk_location = "https://aurora-files.ml/apk/" + filename
             else:
                 flash('No selected file')
                 return redirect(request.url)
