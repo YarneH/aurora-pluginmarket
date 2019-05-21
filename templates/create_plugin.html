@@ -55,7 +55,7 @@
                    value="{{ plugin.unique_name }}"/>
         </div>
         <div class="form-group row">
-            <label class="col-3" for="apk_location">APP location</label>
+            <label class="col-3" for="apk_location">Plugin apk location</label>
             <input class="form-control col-9" type="text" name="apk_location" id="apk_location"
                    value="{{ plugin.apk_location }}"/>
         </div>
@@ -78,7 +78,7 @@
             <input type="file" name="plugin_logo_file"/>
         </div>
         <div class="form-group row">
-            <label class="col-3" for="apk_logo">Apk logo (New apk)</label>
+            <label class="col-3" for="apk_logo">Plugin apk (New apk)</label>
             <input type="file" name="plugin_apk_file" id="apk_logo"/>
 
         </div>
@@ -107,7 +107,7 @@
             <input class="form-control col-9" type="text" id="unique_name" name="unique_name"/>
         </div>
         <div class="form-group row">
-            <label class="col-3" for="apk_location">APP location</label>
+            <label class="col-3" for="apk_location">Plugin apk location</label>
             <input class="form-control col-9" type="text" name="apk_location" id="apk_location"/>
         </div>
         <div class="form-group row">
@@ -126,7 +126,7 @@
             <input type="file" name="plugin_logo_file"/>
         </div>
         <div class="form-group row">
-            <label class="col-3" for="apk_logo">Apk logo (New apk)</label>
+            <label class="col-3" for="apk_logo">Plugin apk (New apk)</label>
             <input type="file" name="plugin_apk_file" id="apk_logo"/>
 
         </div>
@@ -134,6 +134,18 @@
     {% endif %}
     <button class="btn btn-primary" type="submit" value="submit">Submit</button>
     </form>
+    {% if plugin %}
+            <form action="/delete_plugin/{{ plugin.id }}" enctype=multipart/form-data method="POST">
+                <div class="form-group row">
+                        <h4>In case you want to delete this plugin</h4>
+                </div>
+                <div class="form-group row">
+                     <label class="col-3" for="token">API token</label>
+                     <input class="form-control col-9" type="text" name="token" id="token"/>
+                </div>
+                <input class="btn btn-danger" type="submit" value="Delete">
+        </form>
+    {% endif %}
 </div>
 </body>
 </html>

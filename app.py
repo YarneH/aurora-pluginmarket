@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from werkzeug.utils import secure_filename
-from config import Config
+from pluginmarket.config import Config
 import re
 import os
 
@@ -15,7 +15,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'pl
 # Bind SQLAlchemy and Marshmellow to app
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
-
+home = "https://pluginmarket.aurora-files.ml"
 
 # Model for in DB
 class Plugin(db.Model):
@@ -89,7 +89,8 @@ def delete_plugin(id):
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return jsonify(plugins=home+"/plugin", create_plugin=home + "/create_plugin", edit_plugin=home + "/edit_plugin/<id>"), 200
+
 
 
 def valid_token(token, user_put=None):
@@ -102,6 +103,13 @@ def valid_token(token, user_put=None):
                 return [True, user]
     return [False, None]
 
+@app.route("/delete_plugin/<id>", methods=["POST"])
+def plugin_delete(id):
+    plugin = Plugin.query.get(id)
+    validated_token = valid_token(request.form['token'], plugin.creator)
+    if request.method == "POST" and validated_token[0]:
+        return delete_plugin(id)
+    return jsonify(error=401, text="Faulty token"), 401
 
 @app.route("/edit_plugin/<id>", methods=["GET", "POST"])
 def plugin_edit(id):
