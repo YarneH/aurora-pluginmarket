@@ -17,6 +17,7 @@ db = SQLAlchemy(app)
 ma = Marshmallow(app)
 home = "https://pluginmarket.aurora-files.ml"
 
+
 # Model for in DB
 class Plugin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,16 +49,18 @@ class PluginSchema(ma.Schema):
             'id', 'name', 'description', 'version_code', 'unique_name', 'plugin_logo', 'internal_services',
             'apk_location', 'creator')
 
-
+# For receiving one plugin
 plugin_schema = PluginSchema()
+# For receiving all the plugins
 plugin_market_schema = PluginSchema(many=True)
 
-
+# Create a new plugin by posting here
 @app.route("/plugin", methods=["POST"])
 def add_plugin():
-    # the plugin in json to plugin object
+    # The plugin in json to plugin object
     pj = request.json
     token = valid_token(pj["token"])
+    # Allow if the token is valid
     if token[0]:
         new_plugin = Plugin(pj["name"], pj["description"], pj["version_code"], pj["unique_name"], pj["plugin_logo"],
                             pj["internal_services"], pj["apk_location"], token[1])
@@ -65,34 +68,33 @@ def add_plugin():
         db.session.commit()
         return plugin_schema.jsonify(new_plugin)
 
-
+# Get all plugins
 @app.route("/plugin", methods=["GET"])
 def get_plugins():
     all_plugins = Plugin.query.all()
     result = plugin_market_schema.dump(all_plugins)
     return plugin_market_schema.jsonify(result.data)
 
-
+# Get the plugin with id id in json
 @app.route("/plugin/<id>", methods=["GET"])
 def get_plugin(id):
     plugin = Plugin.query.get(id)
     return plugin_schema.jsonify(plugin)
 
-
-@app.route("/plugin/<id>", methods=["DELETE"])
+# Delete the plugin with id id
 def delete_plugin(id):
     plugin = Plugin.query.get(id)
     db.session.delete(plugin)
     db.session.commit()
     return plugin_schema.jsonify(plugin)
 
-
+# Direct the user to the needed links
 @app.route("/")
-def hello():
-    return jsonify(plugins=home+"/plugin", create_plugin=home + "/create_plugin", edit_plugin=home + "/edit_plugin/<id>"), 200
+def home():
+    return jsonify(plugins=home + "/plugin", create_plugin=home + "/create_plugin",
+                   edit_plugin=home + "/edit_plugin/<id>"), 200
 
-
-
+# Check if the token is valid, returns if valid and the user of the token
 def valid_token(token, user_put=None):
     for line in open(basedir + '/tokens.txt'):
         line = line.strip()
@@ -103,21 +105,25 @@ def valid_token(token, user_put=None):
                 return [True, user]
     return [False, None]
 
+# Delete the plugin with id ID
 @app.route("/delete_plugin/<id>", methods=["POST"])
 def plugin_delete(id):
     plugin = Plugin.query.get(id)
     validated_token = valid_token(request.form['token'], plugin.creator)
+    # check if token is valid
     if request.method == "POST" and validated_token[0]:
         return delete_plugin(id)
     return jsonify(error=401, text="Faulty token"), 401
 
+# Edit a plugin (As well UI as processing
 @app.route("/edit_plugin/<id>", methods=["GET", "POST"])
 def plugin_edit(id):
+    plugin = Plugin.query.get(id)
+    # Get the template for editing the plugin
     if request.method == "GET":
-        plugin = Plugin.query.get(id)
         return render_template("create_plugin.html", plugin=plugin)
+    # If submit is clicked
     if request.method == "POST":
-        plugin = Plugin.query.get(id)
         validated_token = valid_token(request.form['token'], plugin.creator)
         if request.method == "POST" and validated_token[0]:
             plugin.name = request.form['name']
@@ -125,13 +131,17 @@ def plugin_edit(id):
             plugin.version_code = request.form['version_code']
             plugin.unique_name = request.form['unique_name']
             plugin.internal_services = request.form['internal_services']
+            # Check if the string of the logo is nog empty
             if request.form['plugin_logo'] != "":
+                # Use the logi string
                 plugin.plugin_logo = request.form['plugin_logo']
             else:
+                # Check if image atached
                 logo = request.files['plugin_logo_file']
                 if logo.filename == '':
                     flash('No selected logo')
                     return redirect(request.url)
+                # Check if the logo is an image and exists
                 if logo and allowed_file(logo.filename, Config.ALLOWED_LOGO):
                     filename = secure_filename(logo.filename)
                     logo.save("/var/www/logos/" + filename)
@@ -146,6 +156,7 @@ def plugin_edit(id):
                 if apk.filename == '':
                     flash('No selected app')
                     return redirect(request.url)
+                # Check if the apk is an apk and exists
                 if apk and allowed_file(apk.filename, Config.ALLOWED_APK):
                     filename = secure_filename(apk.filename)
                     apk.save("/var/www/apk/" + filename)
@@ -157,7 +168,7 @@ def plugin_edit(id):
             db.session.commit()
             return plugin_schema.jsonify(plugin)
 
-
+# Create a new plugin (same as edit plugin)
 @app.route("/create_plugin", methods=["GET", "POST"])
 def plugin_creator():
     if request.method == "GET":

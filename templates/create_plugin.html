@@ -135,15 +135,15 @@
     <button class="btn btn-primary" type="submit" value="submit">Submit</button>
     </form>
     {% if plugin %}
-            <form action="/delete_plugin/{{ plugin.id }}" enctype=multipart/form-data method="POST">
-                <div class="form-group row">
-                        <h4>In case you want to delete this plugin</h4>
-                </div>
-                <div class="form-group row">
-                     <label class="col-3" for="token">API token</label>
-                     <input class="form-control col-9" type="text" name="token" id="token"/>
-                </div>
-                <input class="btn btn-danger" type="submit" value="Delete">
+        <form action="/delete_plugin/{{ plugin.id }}" enctype=multipart/form-data method="POST">
+            <div class="form-group row">
+                <h4>In case you want to delete this plugin</h4>
+            </div>
+            <div class="form-group row">
+                <label class="col-3" for="token">API token</label>
+                <input class="form-control col-9" type="text" name="token" id="token"/>
+            </div>
+            <input class="btn btn-danger" type="submit" value="Delete">
         </form>
     {% endif %}
 </div>
